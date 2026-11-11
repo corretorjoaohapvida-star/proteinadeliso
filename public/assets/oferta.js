@@ -17,21 +17,13 @@
   if (reviews) {
     const group = reviews.querySelector('.reviews-group');
     const track = reviews.querySelector('.reviews-track');
-    const toggle = reviews.querySelector('.reviews-toggle');
     const viewport = reviews.querySelector('.reviews-viewport');
-    if (group && track && toggle && viewport) {
+    if (group && track && viewport) {
       const duplicate = group.cloneNode(true);
       duplicate.setAttribute('aria-hidden', 'true');
       duplicate.setAttribute('inert', '');
       track.appendChild(duplicate);
-      toggle.hidden = false;
       reviews.classList.add('is-running');
-      toggle.addEventListener('click', function () {
-        const paused = reviews.classList.toggle('is-paused');
-        toggle.setAttribute('aria-pressed', String(paused));
-        toggle.textContent = paused ? 'Continuar comentários' : 'Pausar comentários';
-        if (!paused) viewport.scrollLeft = 0;
-      });
     }
   }
   const trigger = document.getElementById('sticky-trigger');
