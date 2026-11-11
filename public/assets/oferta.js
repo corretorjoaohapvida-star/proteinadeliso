@@ -1,0 +1,38 @@
+(function () {
+  'use strict';
+  const filterButtons = Array.from(document.querySelectorAll('[data-recipe-filter]'));
+  const recipeCards = Array.from(document.querySelectorAll('[data-recipe-type]'));
+  const filterStatus = document.querySelector('.recipe-filter-status');
+  filterButtons.forEach(button => button.addEventListener('click', function () {
+    const choice = button.dataset.recipeFilter;
+    filterButtons.forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+    let visible = 0;
+    recipeCards.forEach(card => {
+      card.hidden = choice !== 'todos' && card.dataset.recipeType !== choice;
+      if (!card.hidden) visible += 1;
+    });
+    if (filterStatus) filterStatus.textContent = visible === 1 ? '1 ideia em exibição' : visible + ' ideias em exibição';
+  }));
+  const trigger = document.getElementById('sticky-trigger');
+  const sticky = document.querySelector('.mobile-offer');
+  if (!trigger || !sticky) return;
+  function updateSticky() {
+    sticky.classList.toggle('is-visible', trigger.getBoundingClientRect().top < 0);
+  }
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(updateSticky, { threshold: [0, 1] });
+    observer.observe(trigger);
+    window.addEventListener('resize', updateSticky, { passive: true });
+  } else {
+    let pending = false;
+    window.addEventListener('scroll', function () {
+      if (!pending) {
+        pending = true;
+        requestAnimationFrame(function () { pending = false; updateSticky(); });
+      }
+    }, { passive: true });
+    window.addEventListener('resize', updateSticky, { passive: true });
+  }
+  window.addEventListener('pageshow', updateSticky);
+  updateSticky();
+}());
