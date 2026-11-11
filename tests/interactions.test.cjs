@@ -45,3 +45,30 @@ assert.equal(filters[1].attributes['aria-pressed'], 'true');
 assert.equal(filters[0].attributes['aria-pressed'], 'false');
 filters[0].handlers.click(); assert.deepEqual(cards.map(x => x.hidden), [false, false, false]);
 console.log('PASS: recipe filters and sticky CTA threshold; countdown removed.');
+// Review duplication stays outside the accessible reading order; pause enables browsing.
+const reviewClasses = new Set();
+const reviewToggle = { hidden: true, textContent: '', attrs: {}, setAttribute(k,v) { this.attrs[k]=v; }, addEventListener(k,v) { this[k]=v; } };
+const clone = { attrs: {}, setAttribute(k,v) { this.attrs[k]=v; } };
+const reviewTrack = { appendChild(node) { this.child=node; } };
+const viewport = { scrollLeft: 80 };
+const review = {
+ querySelector(s) { return { '.reviews-group': { cloneNode: () => clone }, '.reviews-track': reviewTrack, '.reviews-toggle': reviewToggle, '.reviews-viewport': viewport }[s]; },
+ classList: { add(k) { reviewClasses.add(k); }, toggle(k) { if(reviewClasses.has(k)) { reviewClasses.delete(k); return false; } reviewClasses.add(k); return true; } }
+};
+const previousQuery = document.querySelector;
+document.querySelector = s => s === '.reviews' ? review : previousQuery(s);
+vm.runInNewContext(fs.readFileSync(source, 'utf8'), context);
+assert.equal(reviewTrack.child, clone);
+assert.equal(clone.attrs['aria-hidden'], 'true');
+assert.equal(clone.attrs.inert, '');
+assert.equal(reviewToggle.hidden, false);
+reviewToggle.click();
+assert.equal(reviewClasses.has('is-paused'), true);
+assert.equal(reviewToggle.attrs['aria-pressed'], 'true');
+reviewToggle.click();
+assert.equal(reviewClasses.has('is-paused'), false);
+assert.equal(viewport.scrollLeft, 0);
+const html = fs.readFileSync(path.resolve(__dirname, '../public/index.html'), 'utf8');
+assert.equal((html.match(/class="review-card"/g)||[]).length,10);
+assert.equal((html.match(/aria-label="4 de 5 estrelas"/g)||[]).length,4);
+console.log('PASS: ten reviews, corrected ratings, accessible clones and pause/resume.');
