@@ -32,7 +32,7 @@ python -m http.server 8080 --directory dist
 
 ## Checkout e Pixel
 
-O botão de compra aponta para `https://pay.cakto.com.br/gg42ydn`. A oferta anuncia R$17 e informa a taxa de R$0,99 observada no checkout, totalizando R$17,99. Se a taxa mudar na Cakto, atualize o texto da LP.
+O botão de compra aponta para `https://pay.cakto.com.br/gg42ydn_1314408`. A oferta anuncia R$17 e informa a taxa de R$0,99 observada no checkout, totalizando R$17,99. Se a taxa mudar na Cakto, atualize o texto da LP.
 
 Meta Pixel configurado: `1146882501637448`, evento `PageView`. A página usa CSP com hash do código inline aprovado. Se editar esse trecho do Pixel, recalcule seu hash SHA-256 na meta Content-Security-Policy; o hash atual corresponde exatamente ao código presente no HTML.
 
