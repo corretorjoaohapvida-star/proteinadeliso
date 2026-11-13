@@ -6,7 +6,7 @@ const source = resolve(root, 'public');
 const output = resolve(root, 'dist');
 const index = await readFile(resolve(source, 'index.html'), 'utf8');
 if (!index.includes('https://pay.cakto.com.br/gg42ydn_1314408')) throw new Error('Checkout esperado não encontrado.');
-if (!index.includes("fbq('init', '1146882501637448')")) throw new Error('Pixel esperado não encontrado.');
+if (!index.includes("fbq('init', '1598247598188716')")) throw new Error('Pixel esperado não encontrado.');
 const files = await readdir(source, { recursive: true });
 for (const path of files) {
   if (path.split(/[\\/]/).some(part => part.startsWith('.'))) throw new Error(`Arquivo oculto na pasta pública: ${path}`);
